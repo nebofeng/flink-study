@@ -27,14 +27,7 @@ public class WordCountDemo {
         DataStream<String> dataStream=env.socketTextStream(hostname,port);
 
         //执行逻辑
-        DataStream<WordCount> wordAndOneStream=dataStream.flatMap(new FlatMapFunction<String, WordCount>() {
-            public void flatMap(String line, Collector<WordCount> cout) throws Exception {
-                String[] fields=line.split("\t");
-                 for(String word:fields){
-                     cout.collect(new WordCount(word,1));
-                 }
-            }
-        });
+        DataStream<WordCount> wordAndOneStream=dataStream.flatMap(new SplitFlatMapTask());
 
         DataStream<WordCount> resultStream=wordAndOneStream.keyBy("word")
                 .timeWindow(Time.seconds(2),Time.seconds(1))
@@ -44,6 +37,19 @@ public class WordCountDemo {
 
         env.execute("WindowWordCountJava");
 
+    }
+
+
+    //抽取出来，解耦
+    public  static class SplitFlatMapTask implements  FlatMapFunction<String,WordCount>{
+        public void flatMap(String line, Collector<WordCount> collector) throws Exception {
+            String[] fields=line.split("\t");
+            for(String word:fields){
+                collector.collect(new WordCount(word,1));
+            }
+
+
+        }
     }
 
     public static class WordCount{
