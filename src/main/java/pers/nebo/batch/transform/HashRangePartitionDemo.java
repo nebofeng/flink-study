@@ -69,9 +69,11 @@ public class HashRangePartitionDemo {
                     Tuple2<Integer, String> next = it.next();
                     System.out.println("当前线程id："+Thread.currentThread().getId()+","+next);
                 }
-
             }
         }).print();
+
+
+
 
 
     }
