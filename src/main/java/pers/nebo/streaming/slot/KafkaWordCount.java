@@ -37,7 +37,7 @@ public class KafkaWordCount {
             }
         }).setParallelism(2);
         SingleOutputStreamOperator<Tuple2<String,Integer>> result = wordOneStream.keyBy(0).sum(1).setParallelism(2);
-        result.map(tuple->tuple.toString()).setParallelism(2).print().setParallelism(1);
+        result.map(value->value.toString()).setParallelism(2).print().setParallelism(1);
         env.execute("WordCount2");
 
 
