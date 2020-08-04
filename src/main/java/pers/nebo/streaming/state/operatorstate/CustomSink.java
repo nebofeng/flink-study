@@ -57,11 +57,10 @@ public class CustomSink implements SinkFunction<Tuple2<String,Integer>>, Checkpo
         for(Tuple2<String,Integer> ele:bufferElements){
             checkpointState.add(ele);
         }
-
     }
 
 
-    // 用于在程序挥发的时候从状态中恢复数据到内存
+    // 用于在程序恢
     @Override
     public void initializeState(FunctionInitializationContext context) throws Exception {
 
