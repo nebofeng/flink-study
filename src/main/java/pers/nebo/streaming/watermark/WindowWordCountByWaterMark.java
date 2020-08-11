@@ -36,7 +36,7 @@ import java.util.List;
 
 
 public class WindowWordCountByWaterMark {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws  Exception{
         StreamExecutionEnvironment env=StreamExecutionEnvironment.getExecutionEnvironment();
 
         //设置并行度
@@ -57,7 +57,20 @@ public class WindowWordCountByWaterMark {
                 .timeWindow(Time.seconds(3))
                 //.allowedLateness(Time.seconds(2)) 允许事件迟到2s
                 .sideOutputLateData(outputTag)//保留迟到太多的数据
-                .process(new SumP)
+                .process(new SumProcessWindowFunction());
+
+        //打印结果
+        result.print();
+
+        //处理超时的数据
+        result.getSideOutput(outputTag).map(new MapFunction<Tuple2<String, Long>, String>() {
+            @Override
+            public String map(Tuple2<String, Long> value) throws Exception {
+                return "超时数据： "+value.toString();
+            }
+        }).print();
+
+        env.execute("WindowWordCountByWaterMark");
 
 
     }
