@@ -50,7 +50,7 @@ public class WindowWordCountByWaterMark {
         SingleOutputStreamOperator<String> result =dataStream.map(new MapFunction<String, Tuple2<String,Long>>() {
             @Override
             public Tuple2<String, Long> map(String value) throws Exception {
-                return null;
+                return Tuple2.of(value,1L);
             }
         }).assignTimestampsAndWatermarks(new EventTimeExtractor())
                 .keyBy(0)
